@@ -14,7 +14,8 @@
     ]
   },
   "User": {
-    "dataSource": "mongoDb"
+    "dataSource": "mongoDb",
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mongoDb",
@@ -39,8 +40,7 @@
     "dataSource": "mongoDb"
   },
   "Profile": {
-    "dataSource": "mongoDb",
-    "public": true
+    "dataSource": "mongoDb"
   },
   "Shop": {
     "dataSource": "mongoDb",
@@ -91,6 +91,10 @@
     "public": true
   },
   "PromotionUse": {
+    "dataSource": "mongoDb",
+    "public": true
+  },
+  "user": {
     "dataSource": "mongoDb",
     "public": true
   }
