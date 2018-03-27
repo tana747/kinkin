@@ -1,0 +1,29 @@
+{
+  "name": "Shop",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "shop_pic": {
+      "type": "string"
+    },
+    "id_card": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "geopoint"
+    },
+    "bookbank": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

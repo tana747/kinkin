@@ -1,0 +1,11 @@
+{
+  "mongoDb": {
+    "host": "localhost",
+    "port": 27017,
+    "database": "loopback",
+    "password": "",
+    "name": "mongoDb",
+    "user": "",
+    "connector": "mongodb"
+  }
+}

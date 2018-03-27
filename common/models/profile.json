@@ -1,0 +1,28 @@
+{
+  "name": "Profile",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "nickName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "geopoint",
+      "required": true
+    },
+    "birthDay": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

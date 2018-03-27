@@ -1,0 +1,32 @@
+{
+  "name": "Promotion",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "discount": {
+      "type": "string"
+    },
+    "expire_date": {
+      "type": "date"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

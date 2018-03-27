@@ -1,0 +1,26 @@
+{
+  "name": "Invoice",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "total_price": {
+      "type": "number"
+    },
+    "transactionId": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

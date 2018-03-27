@@ -1,0 +1,26 @@
+{
+  "name": "Product",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "status": {
+      "type": "string"
+    },
+    "time_open": {
+      "type": "date"
+    },
+    "time_end": {
+      "type": "date"
+    },
+    "limit": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
