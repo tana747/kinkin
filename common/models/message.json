@@ -1,6 +1,6 @@
 {
   "name": "Message",
-  "base": "Model",
+  "base": "PersistedModel",
   "properties": {},
   "validations": [],
   "relations": {},

@@ -39,12 +39,10 @@
     "dataSource": "mongoDb"
   },
   "Profile": {
-    "dataSource": "mongoDb",
-    "public": true
+    "dataSource": "mongoDb"
   },
   "Shop": {
-    "dataSource": "mongoDb",
-    "public": true
+    "dataSource": "mongoDb"
   },
   "Tag": {
     "dataSource": "mongoDb",

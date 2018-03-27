@@ -1,6 +1,6 @@
 {
   "name": "Profile",
-  "base": "Model",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
