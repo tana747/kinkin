@@ -7,7 +7,18 @@
   },
   "properties": {},
   "validations": [],
-  "relations": {},
+  "relations": {
+    "promotion": {
+      "type": "belongsTo",
+      "model": "Promotion",
+      "foreignKey": "promotionId"
+    },
+    "invoice": {
+      "type": "belongsTo",
+      "model": "Invoice",
+      "foreignKey": "invoiceId"
+    }
+  },
   "acls": [],
   "methods": {}
 }
