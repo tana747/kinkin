@@ -5,9 +5,24 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "isSendNoti": {
+      "type": "string"
+    }
+  },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "menu": {
+      "type": "belongsTo",
+      "model": "Menu",
+      "foreignKey": "menuId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

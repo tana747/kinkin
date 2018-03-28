@@ -20,7 +20,23 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "order": {
+      "type": "belongsTo",
+      "model": "Order",
+      "foreignKey": "orderId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    },
+    "promotion": {
+      "type": "belongsTo",
+      "model": "Promotion",
+      "foreignKey": "promotionId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

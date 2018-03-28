@@ -5,9 +5,36 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "mobile": {
+      "type": "number"
+    },
+    "isVerify": {
+      "type": "boolean"
+    },
+    "facebook_id": {
+      "type": "string"
+    },
+    "device_token": {
+      "type": "string"
+    },
+    "otp_code": {
+      "type": "string"
+    }
+  },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "profile": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": "profileId"
+    },
+    "shop": {
+      "type": "belongsTo",
+      "model": "Shop",
+      "foreignKey": "shopId"
+    }
+  },
   "acls": [],
   "methods": {}
 }
