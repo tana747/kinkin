@@ -1,0 +1,29 @@
+{
+  "name": "ServiceAccessToken",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "serviceToken": {
+      "type": "string"
+    },
+    "service": {
+      "type": "string"
+    },
+    "ttl": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "member": {
+      "type": "belongsTo",
+      "model": "Member",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
