@@ -96,5 +96,13 @@
   "user": {
     "dataSource": "mongoDb",
     "public": true
+  },
+  "Experts": {
+    "dataSource": "mongoDb",
+    "public": true
+  },
+  "ExpertsShop": {
+    "dataSource": "mongoDb",
+    "public": true
   }
 }
