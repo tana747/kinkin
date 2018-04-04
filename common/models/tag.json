@@ -8,6 +8,9 @@
   "properties": {
     "name": {
       "type": "string"
+    },
+    "isRecommend": {
+      "type": "boolean"
     }
   },
   "validations": [],
