@@ -1,0 +1,28 @@
+{
+  "name": "ExpertsShop",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "date": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "experts": {
+      "type": "belongsTo",
+      "model": "Experts",
+      "foreignKey": "expertId"
+    },
+    "shop": {
+      "type": "belongsTo",
+      "model": "Shop",
+      "foreignKey": "shopId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

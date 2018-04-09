@@ -1,5 +1,5 @@
 {
-  "name": "Tag",
+  "name": "Experts",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -8,9 +8,6 @@
   "properties": {
     "name": {
       "type": "string"
-    },
-    "isRecommend": {
-      "type": "boolean"
     }
   },
   "validations": [],

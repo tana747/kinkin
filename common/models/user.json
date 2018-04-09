@@ -9,8 +9,8 @@
     "mobile": {
       "type": "number"
     },
-    "picture":{
-      "type":"object"
+    "picture": {
+      "type": "object"
     },
     "isVerify": {
       "type": "boolean"
@@ -43,60 +43,53 @@
       "foreignKey": "shopId"
     }
   },
-  "acls": [
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "loginWithFacebookAccessToken"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "login"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "checkEmail"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "signup"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$authenticated",
-      "permission": "ALLOW",
-      "property": "updateProfile"
-    },
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$unauthenticated",
-      "permission": "DENY"
-    },
-    {
+  "acls": [{
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW"
-    }
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "loginWithFacebookAccessToken"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "login"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "checkEmail"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "signup"
+   },
+   {
+     "accessType": "*",
+     "principalType": "ROLE",
+     "principalId": "$unauthenticated",
+     "permission": "DENY"
+   },
+   {
+     "accessType": "*",
+     "principalType": "ROLE",
+     "principalId": "$owner",
+     "permission": "ALLOW"
+   }
   ],
   "methods": {}
 }
