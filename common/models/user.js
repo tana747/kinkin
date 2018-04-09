@@ -227,7 +227,7 @@ module.exports = function(User) {
           }
         }
         model.token = token;
-        model.id = undefined;
+        // model.id = undefined;
         delete model.id;
         model.id = model.userId;
 
