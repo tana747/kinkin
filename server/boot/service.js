@@ -64,7 +64,7 @@ module.exports = function(app) {
   });
 
   Province.find({}, function(err, province) {
-    console.log(province.length);
+    // console.log(province.length);
     if (province.length === 0) {
        exec('sh addressInformation/import.sh', (error, stdout, stderr) => {
           if (error !== null) {
