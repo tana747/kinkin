@@ -49,7 +49,47 @@
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "*"
-    }
+    },
+    {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "loginWithFacebookAccessToken"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "login"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "checkEmail"
+   },
+   {
+     "accessType": "EXECUTE",
+     "principalType": "ROLE",
+     "principalId": "$everyone",
+     "permission": "ALLOW",
+     "property": "signup"
+   },
+   {
+     "accessType": "*",
+     "principalType": "ROLE",
+     "principalId": "$unauthenticated",
+     "permission": "DENY"
+   },
+   {
+     "accessType": "*",
+     "principalType": "ROLE",
+     "principalId": "$owner",
+     "permission": "ALLOW"
+   }
   ],
   "methods": {}
 }
