@@ -44,11 +44,11 @@
     }
   },
   "acls": [{
-      "accessType": "READ",
+      "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW",
-      "property": "find"
+      "property": "*"
     }
   ],
   "methods": {}
