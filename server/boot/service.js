@@ -88,13 +88,13 @@ module.exports = function(app) {
                 console.log(`exec error: ${error}`);
               }
               console.log('amphurCollection Success',`${stdout}`);
-              console.log('amphurCollection Err',`${stderr}`);
+              // console.log('amphurCollection ',`${stderr}`);
             });
             console.log('districtCollection Success',`${stdout}`);
-            console.log('districtCollection Err',`${stderr}`);
+            // console.log('districtCollection ',`${stderr}`);
           });
           console.log('provinceCollection Success',`${stdout}`);
-          console.log('provinceCollection Err',`${stderr}`);
+          // console.log('provinceCollection ',`${stderr}`);
         });
       };
     });
