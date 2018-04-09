@@ -1,0 +1,26 @@
+{
+  "name": "Amphur",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "amphurName": {
+      "type": "string"
+    },
+    "geoId": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "province": {
+      "type": "belongsTo",
+      "model": "Province",
+      "foreignKey": "provinceId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

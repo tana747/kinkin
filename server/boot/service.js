@@ -1,8 +1,9 @@
+const exec = require('child_process').exec;
 module.exports = function(app) {
   var User = app.models.user;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
-
+  var Province = app.models.Province;
   User.findOne({
     where: {
       username: 'admin'
@@ -62,4 +63,16 @@ module.exports = function(app) {
     }
   });
 
+  Province.find({}, function(err, province) {
+    console.log(province.length);
+    if (province.length === 0) {
+       exec('sh addressInformation/import.sh', (error, stdout, stderr) => {
+          if (error !== null) {
+            console.log(`exec error: ${error}`);
+          }
+          // console.log(`${stdout}`);
+          // console.log(`${stderr}`);
+        });
+    }
+  });
 };
