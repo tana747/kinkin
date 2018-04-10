@@ -1,0 +1,34 @@
+{
+  "name": "District",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "districtName": {
+      "type": "string"
+    },
+    "geoId": {
+      "type": "number"
+    },
+    "zipcode": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "province": {
+      "type": "belongsTo",
+      "model": "Province",
+      "foreignKey": "provinceId"
+    },
+    "amphur": {
+      "type": "belongsTo",
+      "model": "Amphur",
+      "foreignKey": "amphurId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

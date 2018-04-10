@@ -104,5 +104,21 @@
   "ExpertsShop": {
     "dataSource": "mongoDb",
     "public": true
+  },
+  "Province": {
+    "dataSource": "mongoDb",
+    "public": true
+  },
+  "District": {
+    "dataSource": "mongoDb",
+    "public": true
+  },
+  "Amphur": {
+    "dataSource": "mongoDb",
+    "public": true
+  },
+  "Address": {
+    "dataSource": "mongoDb",
+    "public": true
   }
 }
