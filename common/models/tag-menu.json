@@ -17,6 +17,13 @@
       "type": "belongsTo",
       "model": "Tag",
       "foreignKey": "tagId"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "update_at": {
+      "type": "date"
     }
   },
   "acls": [],

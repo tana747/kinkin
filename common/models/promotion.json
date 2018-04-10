@@ -23,6 +23,13 @@
     },
     "status": {
       "type": "string"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "update_at": {
+      "type": "date"
     }
   },
   "validations": [],
