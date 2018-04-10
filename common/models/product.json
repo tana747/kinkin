@@ -33,7 +33,7 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property":"find"
+      "property": "find"
     },
     {
       "accessType": "*",

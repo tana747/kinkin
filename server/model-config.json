@@ -116,5 +116,9 @@
   "Amphur": {
     "dataSource": "mongoDb",
     "public": true
+  },
+  "Address": {
+    "dataSource": "mongoDb",
+    "public": true
   }
 }
