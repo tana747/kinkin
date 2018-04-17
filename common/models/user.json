@@ -7,7 +7,7 @@
   },
   "properties": {
     "mobile": {
-      "type": "number"
+      "type": "string"
     },
     "picture": {
       "type": "object"
