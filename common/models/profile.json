@@ -26,6 +26,9 @@
     },
     "update_at": {
       "type": "date"
+    },
+    "userId":{
+        "type": "string"
     }
   },
   "validations": [],

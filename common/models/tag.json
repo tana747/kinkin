@@ -19,6 +19,9 @@
     "update_at": {
       "type": "date",
       "default": "$now"
+    },
+    "userId":{
+      "type": "string"
     }
   },
   "validations": [],
