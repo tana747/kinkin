@@ -74,6 +74,8 @@ module.exports = function(app) {
       let provinceCollection = `mongoimport --db ${db} --collection Province < ./addressInformation/province.json`
       let districtCollection = `mongoimport --db ${db} --collection District < ./addressInformation/district.json`
       let amphurCollection = `mongoimport --db ${db} --collection Amphur < ./addressInformation/amphur.json`
+      // console.log('provinceCollection',provinceCollection);
+      // console.log('province', province);
       if (province.length === 0) {
         exec(provinceCollection, (error, stdout, stderr) => {
           if (error !== null) {

@@ -97,14 +97,6 @@
     "dataSource": "mongoDb",
     "public": true
   },
-  "Experts": {
-    "dataSource": "mongoDb",
-    "public": true
-  },
-  "ExpertsShop": {
-    "dataSource": "mongoDb",
-    "public": true
-  },
   "Province": {
     "dataSource": "mongoDb",
     "public": true
