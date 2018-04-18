@@ -1,26 +1,24 @@
 {
-  "name": "ExpertsShop",
+  "name": "Amphur",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "date": {
-      "type": "date"
+    "amphurName": {
+      "type": "string"
+    },
+    "geoId": {
+      "type": "number"
     }
   },
   "validations": [],
   "relations": {
-    "experts": {
+    "province": {
       "type": "belongsTo",
-      "model": "Experts",
-      "foreignKey": "expertId"
-    },
-    "shop": {
-      "type": "belongsTo",
-      "model": "Shop",
-      "foreignKey": "shopId"
+      "model": "Province",
+      "foreignKey": "provinceId"
     }
   },
   "acls": [],

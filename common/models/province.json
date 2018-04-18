@@ -1,13 +1,16 @@
 {
-  "name": "Experts",
+  "name": "Province",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "name": {
+    "provinceName": {
       "type": "string"
+    },
+    "gioId": {
+      "type": "number"
     }
   },
   "validations": [],

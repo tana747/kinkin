@@ -1,0 +1,51 @@
+{
+  "name": "Address",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "address": {
+      "type": "string"
+    },
+    "postalCode": {
+      "type": "number"
+    },
+    "location": {
+      "type": "geopoint"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "update_at": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "province": {
+      "type": "belongsTo",
+      "model": "Province",
+      "foreignKey": "provinceId"
+    },
+    "amphur": {
+      "type": "belongsTo",
+      "model": "Amphur",
+      "foreignKey": "amphurId"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "District",
+      "foreignKey": "districtId"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

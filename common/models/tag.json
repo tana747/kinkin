@@ -11,6 +11,17 @@
     },
     "isRecommend": {
       "type": "boolean"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "update_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "userId":{
+      "type": "string"
     }
   },
   "validations": [],

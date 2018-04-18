@@ -17,6 +17,16 @@
     },
     "limit": {
       "type": "number"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "update_at": {
+      "type": "date"
+    },
+    "userId":{
+      "type": "string"
     }
   },
   "validations": [],
@@ -33,7 +43,7 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property":"find"
+      "property": "find"
     },
     {
       "accessType": "*",
