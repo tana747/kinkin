@@ -13,10 +13,6 @@
     "nickName": {
       "type": "string"
     },
-    "location": {
-      "type": "geopoint",
-      "required": true
-    },
     "birthDay": {
       "type": "date"
     },
@@ -28,7 +24,7 @@
       "type": "date"
     },
     "userId":{
-        "type": "string"
+      "type": "string"
     }
   },
   "validations": [],

@@ -9,8 +9,8 @@
     "address": {
       "type": "string"
     },
-    "postalCode": {
-      "type": "number"
+    "addressType": {
+      "type": "string"
     },
     "location": {
       "type": "geopoint"

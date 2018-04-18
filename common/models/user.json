@@ -30,6 +30,9 @@
     },
     "update_at": {
       "type": "date"
+    },
+    "userType": {
+      "type": "string"
     }
   },
   "validations": [],
