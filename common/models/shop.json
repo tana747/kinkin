@@ -28,12 +28,31 @@
     "update_at": {
       "type": "date"
     },
-    "userId":{
+    "create_by":{
+      "type": "string"
+    },
+    "address": {
       "type": "string"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "province": {
+      "type": "belongsTo",
+      "model": "Province",
+      "foreignKey": "provinceId"
+    },
+    "amphur": {
+      "type": "belongsTo",
+      "model": "Amphur",
+      "foreignKey": "amphurId"
+    },
+    "district": {
+      "type": "belongsTo",
+      "model": "District",
+      "foreignKey": "districtId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -23,12 +23,13 @@ var loopback = require('loopback');
 var SALT_FACTOR = 10;
 // Development Environment for reset password
 var env = process.env.NODE_ENV || 'production';
-var resetUrl = 'https://api.vingtv.com#/resetpassword';
-var BASE_URL = 'https://api.vingtv.com';
-if ('dev' === env) {
-  resetUrl = 'http://localhost:3000#/resetpassword';
-  BASE_URL = 'http://localhost:3000';
-}
+// var resetUrl = 'https://api.vingtv.com#/resetpassword';
+// var BASE_URL = 'https://api.vingtv.com';
+// if ('dev' === env) {
+var resetUrl = 'http://localhost:3000#/resetpassword';
+var BASE_URL = 'http://localhost:3000';
+// }
+
 
 
 /*!
@@ -72,27 +73,27 @@ module.exports = function(User) {
   }
 
   // inline helper function
-    var createReturnObj = function (member, token) {
-      return {
-        id: member.id,
-        userId: member.id,
-        name: member.name,
-        email: member.email,
-        displayName: member.displayName,
-        picture: member.picture,
-        notificationFollow: member.notificationFollow,
-        facebookId: member.facebookId,
-        token: token,
-        facebookstatus: true
-      };
+  var createReturnObj = function(member, token) {
+    return {
+      id: member.id,
+      userId: member.id,
+      name: member.name,
+      email: member.email,
+      displayName: member.displayName,
+      picture: member.picture,
+      notificationFollow: member.notificationFollow,
+      facebookId: member.facebookId,
+      token: token,
+      facebookstatus: true
     };
+  };
 
 
 
-  var createMemberToken = function (member, done) {
+  var createMemberToken = function(member, done) {
     member.createAccessToken({
       tt: APP_ACCESS_TOKEN_TTL
-    }, function (err, token) {
+    }, function(err, token) {
       if (err) {
         return done({
           message: err
@@ -107,7 +108,7 @@ module.exports = function(User) {
             },
           }
         }]
-      }, function (err, memberWithImage) {
+      }, function(err, memberWithImage) {
         if (err) {
           console.log(err);
           return done(err);
@@ -120,14 +121,14 @@ module.exports = function(User) {
     });
   };
 
-  var download = function (uri, filename, callback) {
-     request.head(uri, function (err, res, body) {
-       console.log('content-type:', res.headers['content-type']);
-       console.log('content-length:', res.headers['content-length']);
+  var download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+      console.log('content-type:', res.headers['content-type']);
+      console.log('content-length:', res.headers['content-length']);
 
-       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-     });
-   };
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+  };
 
   User.beforeRemote('**', function(ctx, unused, next) {
     console.log('Member.beforeRemote');
@@ -178,190 +179,255 @@ module.exports = function(User) {
 
 
 
-    /**
-     *  Return token after signup
-     */
-    User.observe('after save', function(ctx, next) {
-      if (ctx.isNewInstance) {
-        // // console.log('Saved %s#%s', ctx.Model.modelName, ctx.instance.id);
-        // ctx.instance
-        ctx.instance.createAccessToken({
-          tt: APP_ACCESS_TOKEN_TTL
-        }, function(err, token) {
-          if (err) {
-            console.log(err);
-            next();
-          }
-          ctx.instance.token = token;
-          next();
-        });
-      } else {
-        // // console.log('Updated %s matching %j',
-        //     ctx.Model.pluralModelName,
-        //     ctx.where);
-        next();
-      }
-
-    });
-
-    /**
-     *  Change how login return token
-     */
-    User.afterRemote('login', function(ctx, model, next) {
-
-      User.findById(model.userId, function(err, member) {
+  /**
+   *  Return token after signup
+   */
+  User.observe('after save', function(ctx, next) {
+    if (ctx.isNewInstance) {
+      // // console.log('Saved %s#%s', ctx.Model.modelName, ctx.instance.id);
+      // ctx.instance
+      ctx.instance.createAccessToken({
+        tt: APP_ACCESS_TOKEN_TTL
+      }, function(err, token) {
         if (err) {
           console.log(err);
+          next();
         }
-
-        var token = {
-          id: model.id,
-          ttl: model.ttl,
-          created: model.created,
-          userId: model.userId,
-        };
-
-        for (var key in member) {
-          if (typeof member[key] !== 'function' && typeof member[key] !== 'object' && member[key] && key !== 'password' && typeof member[key] !== 'boolean') {
-            model[key] = member[key];
-          }
-        }
-        model.token = token;
-        // model.id = undefined;
-        delete model.id;
-        model.id = model.userId;
-
-        model.userId = undefined;
-        delete model.userId;
-
-        model.ttl = undefined;
-        delete model.ttl;
-        model.created = undefined;
-        delete model.created;
-
+        ctx.instance.token = token;
         next();
       });
+    } else {
+      // // console.log('Updated %s matching %j',
+      //     ctx.Model.pluralModelName,
+      //     ctx.where);
+      next();
+    }
+
+  });
+
+  /**
+   *  Change how login return token
+   */
+  User.afterRemote('login', function(ctx, model, next) {
+
+    User.findById(model.userId, function(err, member) {
+      if (err) {
+        console.log(err);
+      }
+
+      var token = {
+        id: model.id,
+        ttl: model.ttl,
+        created: model.created,
+        userId: model.userId,
+      };
+
+      for (var key in member) {
+        if (typeof member[key] !== 'function' && typeof member[key] !== 'object' && member[key] && key !== 'password' && typeof member[key] !== 'boolean') {
+          model[key] = member[key];
+        }
+      }
+      model.token = token;
+      // model.id = undefined;
+      delete model.id;
+      model.id = model.userId;
+
+      model.userId = undefined;
+      delete model.userId;
+
+      model.ttl = undefined;
+      delete model.ttl;
+      model.created = undefined;
+      delete model.created;
+
+      next();
+    });
+  });
+
+
+  User.loginWithFacebookAccessToken = function(accessToken, done) {
+
+    // Set FB access token to FB connector
+    FB.setAccessToken(accessToken);
+    FB.extend({
+      appId: '2045032589152392',
+      appSecret: '0238147b8c1c5cc34540c3f7462815a8'
     });
 
+    // Check if FB is valid
+    FB.api('me?fields=id,name,email,picture', function(res) {
+      if (res.error) {
+        console.log(res)
+        var err = new Error('Invalid FacebookAccessToken.');
+        err.status = 422; // HTTP status code
+        done(err);
+      } else {
+        console.log(res);
 
-    User.loginWithFacebookAccessToken = function(accessToken, done) {
+        // res.id is facebookId in our member
+        var facebookId = res.id;
+        var email = res.email;
+        var picture = res.picture;
 
-      // Set FB access token to FB connector
-      FB.setAccessToken(accessToken);
-      FB.extend({appId: '2045032589152392', appSecret: '0238147b8c1c5cc34540c3f7462815a8'});
+        User.findOne({
+          where: {
+            facebookId: facebookId
+          }
+        }, function(err, member) {
+          if (err) {
+            console.log(err);
+            return done({
+              message: err
+            });
+          }
 
-        // Check if FB is valid
-        FB.api('me?fields=id,name,email,picture', function (res) {
-          if (res.error) {
-            console.log(res)
-            var err = new Error('Invalid FacebookAccessToken.');
-            err.status = 422; // HTTP status code
-            done(err);
+          if (member) {
+            if (!member.facebookstatus) {
+              member.facebookstatus = true;
+              member.picture = res.picture;
+              member.save(function(err) {
+                if (err) {
+                  return done(err);
+                }
+              });
+            }
+            // Generate App Access Token for logged in member
+            return createMemberToken(member, done);
           } else {
-            console.log(res);
-
-            // res.id is facebookId in our member
-            var facebookId = res.id;
-            var email = res.email;
-            var picture = res.picture;
-
             User.findOne({
               where: {
-                facebookId: facebookId
+                email: email
               }
-            }, function (err, member) {
+            }, function(err, member2) {
               if (err) {
                 console.log(err);
-                return done({
-                  message: err
-                });
               }
-
-              if (member) {
-                if (!member.facebookstatus) {
-                  member.facebookstatus = true;
-                  member.picture = res.picture;
-                  member.save(function (err) {
-                    if (err) {
-                      return done(err);
-                    }
-                  });
-                }
-                // Generate App Access Token for logged in member
-                return createMemberToken(member, done);
-              } else {
-                User.findOne({
-                  where: {
-                    email: email
-                  }
-                }, function (err, member2) {
+              if (member2 && member2.email === email) {
+                member2.facebookId = facebookId;
+                member2.picture = res.picture;
+                member2.facebookstatus = true;
+                member2.save(function(err) {
                   if (err) {
-                    console.log(err);
+                    return done(err);
                   }
-                  if (member2 && member2.email === email) {
-                    member2.facebookId = facebookId;
-                    member2.picture = res.picture;
-                    member2.facebookstatus = true;
-                    member2.save(function (err) {
-                      if (err) {
-                        return done(err);
-                      }
-                      // Generate App Access Token for logged in member
-                      return createMemberToken(member2, done);
-                    });
-                  } else {
+                  // Generate App Access Token for logged in member
+                  return createMemberToken(member2, done);
+                });
+              } else {
 
-                    var newMember = {};
-                    newMember.facebookId = res.id;
-                    newMember.displayName = res.name;
-                    newMember.email = res.email ? res.email : res.id + 'ving@facebook.com';
-                    newMember.picture = res.picture;
+                var newMember = {};
+                newMember.facebookId = res.id;
+                newMember.displayName = res.name;
+                newMember.email = res.email ? res.email : res.id + 'ving@facebook.com';
+                newMember.picture = res.picture;
 
-                    // Generate salt
-                    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+                // Generate salt
+                bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+                  if (err) {
+                    callback(err);
+                  }
+
+                  // Generate password
+                  var d = Date.now;
+                  bcrypt.hash(newMember.email + d.toString(), salt, function(err, hash) {
+                    if (err) {
+                      callback(err);
+                    }
+                    newMember.password = hash;
+
+                    // Create a new member
+                    User.create(newMember, function(err, user) {
                       if (err) {
                         callback(err);
                       }
 
-                      // Generate password
-                      var d = Date.now;
-                      bcrypt.hash(newMember.email + d.toString(), salt, function (err, hash) {
-                        if (err) {
-                          callback(err);
-                        }
-                        newMember.password = hash;
-
-                        // Create a new member
-                        User.create(newMember, function (err, user) {
-                          if (err) {
-                            callback(err);
-                          }
-
-                          var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
-                          var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
-                          download(res.picture.data.url, imagePath, function () {
-                            console.log('done downloading');
-                            // Image.create({
-                            //     profileId: user.id,
-                            //     url: '/assets/profile/' + imageFilename,
-                            //     hidden: 0
-                            //   })
-                              // create access token
-                            return createMemberToken(user, done);
-                          });
-
-
-                        });
+                      var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
+                      var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
+                      download(res.picture.data.url, imagePath, function() {
+                        console.log('done downloading');
+                        // Image.create({
+                        //     profileId: user.id,
+                        //     url: '/assets/profile/' + imageFilename,
+                        //     hidden: 0
+                        //   })
+                        // create access token
+                        return createMemberToken(user, done);
                       });
+
+
                     });
-                  }
+                  });
                 });
               }
             });
-          } // else
-        }); // FB.api('/me')
-      };
+          }
+        });
+      } // else
+    }); // FB.api('/me')
+  };
 
+  User.newPassword = function(data, callback) {
+
+    // console.log(data.accessToken);
+    if (!data.accessToken) {
+      var errMsg = new Error('Not Authorized.');
+      errMsg.status = 401; // HTTP status code
+      return callback(errMsg);
+    }
+
+    User.findById(data.accessToken.userId, function(err, member) {
+      // Member.find({
+      //   where: {
+      //     email: data.email
+      //   }
+      // }, function(err, member) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 500; // HTTP status code
+        return callback(errMsg);
+      }
+      if (member) {
+        bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+          if (err) {
+            console.log(err);
+            var errMsg = new Error(err);
+            errMsg.status = 500; // HTTP status code
+            return callback(errMsg);
+          }
+
+          bcrypt.hash(data.password, salt, function(err, hash) {
+            if (err) {
+              console.log(err);
+              var errMsg = new Error(err);
+              errMsg.status = 500; // HTTP status code
+              return callback(errMsg);
+            }
+
+
+            User.updateAll({
+              id: member.id
+            }, {
+              password: hash
+            }, function(err, info) {
+              if (err) {
+                console.log(err);
+                var errMsg = new Error(err);
+                errMsg.status = 500; // HTTP status code
+                return callback(errMsg);
+              }
+              return callback(null, member);
+            });
+          });
+        });
+      } else {
+        // console.log('Cannot find Member');
+        var errMsg = new Error('Cannot find Member');
+        errMsg.status = 500; // HTTP status code
+        return callback(errMsg);
+      }
+    });
+  };
 
   User.setup = function() {
     User.remoteMethod(
@@ -374,8 +440,9 @@ module.exports = function(User) {
           description: 'Facebook access token acquired by client.'
         },
         returns: {
-         arg: 'token', type: 'Object',
-         description: 'App access token.'
+          arg: 'token',
+          type: 'Object',
+          description: 'App access token.'
         },
         returns: {
           type: 'object',
@@ -387,6 +454,84 @@ module.exports = function(User) {
       });
   }
 
+  User.changePassword = function(data, req, cb) {
+    var userId = req.accessToken.userId
+    if ((data.oldPassword === null || data.oldPassword === undefined) || (
+        data.newPassword === null || data.newPassword === undefined)) {
+      var error = new Error('Validate.');
+      error.status = 422;
+      return cb(error);
+    }
+
+    User.findById(userId, {
+      where: {
+        status: 'active',
+      }
+    }, function(err, user) {
+      if (err) {
+        return cb(err);
+      }
+      if (!user) {
+        var errMsg = new Error('Can not found member !!');
+        errMsg.status = 403;
+        return cb(errMsg);
+      }
+      user.hasPassword(data.oldPassword, function(err, response) {
+        if (response === false) {
+          var errMsg = new Error('รหัสผ่านเก่าของคุณไม่ถูกต้อง');
+          errMsg.status = 403;
+          return cb(errMsg);
+        }
+        user.password = data.newPassword;
+        user.save();
+        return cb(null, {
+          success: true
+        });
+      });
+    });
+  };
+
   User.setup();
 
+  User.remoteMethod('newPassword', {
+    http: {
+      path: '/resetPassword',
+      verb: 'post'
+    },
+    accepts: [{
+      arg: 'data',
+      type: 'object',
+      http: {
+        source: 'body'
+      }
+    }],
+    returns: {
+      type: 'object',
+      root: true
+    }
+  });
+  User.remoteMethod('changePassword', {
+    description: 'Change password',
+    accepts: [{
+      arg: 'data',
+      type: 'object',
+      http: {
+        source: 'body'
+      }
+    }, {
+      arg: 'req',
+      type: 'object',
+      http: {
+        source: 'req'
+      }
+    }],
+    returns: {
+      type: 'object',
+      root: true
+    },
+    http: {
+      verb: 'post'
+    }
+  });
 };
+//

@@ -30,6 +30,9 @@
     },
     "update_at": {
       "type": "date"
+    },
+    "create_by": {
+      "type": "string"
     }
   },
   "validations": [],
