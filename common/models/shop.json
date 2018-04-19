@@ -28,7 +28,7 @@
     "update_at": {
       "type": "date"
     },
-    "userId":{
+    "create_by":{
       "type": "string"
     },
     "address": {
