@@ -21,6 +21,9 @@
     },
     "update_at": {
       "type": "date"
+    },
+    "status":{
+      "type": "string",
     }
   },
   "validations": [],

@@ -27,6 +27,9 @@
     },
     "create_by":{
       "type": "string"
+    },
+    "status":{
+      "type": "string"
     }
   },
   "validations": [],
