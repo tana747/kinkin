@@ -22,7 +22,7 @@
     "update_at": {
       "type": "date"
     },
-    "status":{
+    "status": {
       "type": "string"
     }
   },

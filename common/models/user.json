@@ -21,9 +21,6 @@
     "device_token": {
       "type": "string"
     },
-    "otp_code": {
-      "type": "string"
-    },
     "create_at": {
       "type": "date",
       "default": "$now"
@@ -57,18 +54,20 @@
       "foreignKey": "shopId"
     }
   },
-  "acls": [{
+  "acls": [
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "*"
-    },{
-        "accessType": "*",
-        "principalType": "ROLE",
-        "principalId": "superadmin",
-        "permission": "ALLOW",
-        "property": "*"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "superadmin",
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
       "accessType": "EXECUTE",

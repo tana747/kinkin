@@ -23,10 +23,10 @@
     "update_at": {
       "type": "date"
     },
-    "create_by":{
+    "create_by": {
       "type": "string"
     },
-    "status":{
+    "status": {
       "type": "string",
       "default": "active"
     }
