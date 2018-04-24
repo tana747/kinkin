@@ -7,15 +7,15 @@ var request = require('request');
 var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
-
+let app = require('../../server/server.js');
 // var transport = nodemailer.createTransport('smtps://monthira%40playwork.co.th:2482536sa@smtp.gmail.com');
 // create reusable transporter object using the default SMTP transport
 var transport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'vingmailer@playwork.co.th',
-    pass: 'Maewnam7476'
-  }
+    pass: 'Maewnam7476',
+  },
 });
 
 var loopback = require('loopback');
@@ -30,16 +30,12 @@ if ('dev' === env) {
   BASE_URL = 'http://localhost:3000';
 }
 
-
 /*!
  * Module Constants.
  */
 var APP_ACCESS_TOKEN_TTL = 1209600;
 
-
 module.exports = function(User) {
-
-
   /// Helper function to validate token
   function validateToken(req, data, callback) {
     var AccessToken = User.app.models.AccessToken;
@@ -53,8 +49,8 @@ module.exports = function(User) {
     }
     AccessToken.findOne({
       where: {
-        id: accessToken
-      }
+        id: accessToken,
+      },
     }, function(err, token) {
       if (err) {
         return callback(err);
@@ -72,7 +68,7 @@ module.exports = function(User) {
   }
 
   // inline helper function
-    var createReturnObj = function (member, token) {
+  var createReturnObj = function(member, token) {
       return {
         id: member.id,
         userId: member.id,
@@ -83,19 +79,17 @@ module.exports = function(User) {
         notificationFollow: member.notificationFollow,
         facebookId: member.facebookId,
         token: token,
-        facebookstatus: true
+        facebookstatus: true,
       };
     };
 
-
-
-  var createMemberToken = function (member, done) {
+  var createMemberToken = function(member, done) {
     member.createAccessToken({
-      tt: APP_ACCESS_TOKEN_TTL
-    }, function (err, token) {
+      tt: APP_ACCESS_TOKEN_TTL,
+    }, function(err, token) {
       if (err) {
         return done({
-          message: err
+          message: err,
         });
       }
       User.findById(member.id, {
@@ -103,11 +97,11 @@ module.exports = function(User) {
           relation: 'profile',
           scope: {
             where: {
-              hidden: 0
+              hidden: 0,
             },
-          }
-        }]
-      }, function (err, memberWithImage) {
+          },
+        }],
+      }, function(err, memberWithImage) {
         if (err) {
           console.log(err);
           return done(err);
@@ -115,19 +109,18 @@ module.exports = function(User) {
         console.log(memberWithImage);
         var returnObj = createReturnObj(memberWithImage, token);
         return done(err, returnObj);
-      })
-
+      });
     });
   };
 
-  var download = function (uri, filename, callback) {
-     request.head(uri, function (err, res, body) {
+  var download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
        console.log('content-type:', res.headers['content-type']);
        console.log('content-length:', res.headers['content-length']);
 
        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
      });
-   };
+  };
 
   User.beforeRemote('**', function(ctx, unused, next) {
     console.log('Member.beforeRemote');
@@ -141,12 +134,10 @@ module.exports = function(User) {
     }
   });
 
-
   /**
    *  Reset password handle
    */
   User.on('resetPasswordRequest', function(info) {
-
     var mailOptions = {
       from: '"kinkin" <info@playwork.co.th>', // sender address
       to: info.email, // list of receivers
@@ -167,7 +158,7 @@ module.exports = function(User) {
       transport.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log('reject here');
-          console.log("err======>", error);
+          console.log('err======>', error);
           return console.log(error);
         }
         console.log(info);
@@ -176,17 +167,15 @@ module.exports = function(User) {
     });
   });
 
-
-
     /**
      *  Return token after signup
      */
-    User.observe('after save', function(ctx, next) {
+  User.observe('after save', function(ctx, next) {
       if (ctx.isNewInstance) {
         // // console.log('Saved %s#%s', ctx.Model.modelName, ctx.instance.id);
         // ctx.instance
         ctx.instance.createAccessToken({
-          tt: APP_ACCESS_TOKEN_TTL
+          tt: APP_ACCESS_TOKEN_TTL,
         }, function(err, token) {
           if (err) {
             console.log(err);
@@ -201,14 +190,12 @@ module.exports = function(User) {
         //     ctx.where);
         next();
       }
-
     });
 
     /**
      *  Change how login return token
      */
-    User.afterRemote('login', function(ctx, model, next) {
-
+  User.afterRemote('login', function(ctx, model, next) {
       User.findById(model.userId, function(err, member) {
         if (err) {
           console.log(err);
@@ -244,16 +231,46 @@ module.exports = function(User) {
     });
 
 
-    User.loginWithFacebookAccessToken = function(accessToken, done) {
 
+
+    let Role;
+  let RoleMapping;
+  User.createChef = function(a) {
+    Role = app.models.Role;
+    RoleMapping = app.models.RoleMapping;
+    if (a.instance) {
+      if(a.isNewInstance) {
+        Role.find({where: {name: 'chef'}}, function(err, role) {
+          if (err) {return console.log(err);}
+
+          console.log('User assigned RoleID ' + role.id + ' (' + a.instance.type + ')');
+          // RoleMapping.create({
+          //   principalType: "chef",
+          //   principalId: a.instance.id,
+          //   roleId: role.id
+          // }, function(err, roleMapping) {
+  
+          //   if (err) {return console.log(err);}
+  
+          //   console.log('User assigned RoleID ' + role.id + ' (' + a.instance.type + ')');
+  
+          // });
+  
+        });
+  
+      }
+    }
+}; 
+
+  User.loginWithFacebookAccessToken = function(accessToken, done) {
       // Set FB access token to FB connector
       FB.setAccessToken(accessToken);
       FB.extend({appId: '2045032589152392', appSecret: '0238147b8c1c5cc34540c3f7462815a8'});
 
         // Check if FB is valid
-        FB.api('me?fields=id,name,email,picture', function (res) {
+      FB.api('me?fields=id,name,email,picture', function(res) {
           if (res.error) {
-            console.log(res)
+            console.log(res);
             var err = new Error('Invalid FacebookAccessToken.');
             err.status = 422; // HTTP status code
             done(err);
@@ -267,13 +284,13 @@ module.exports = function(User) {
 
             User.findOne({
               where: {
-                facebookId: facebookId
-              }
-            }, function (err, member) {
+                facebookId: facebookId,
+              },
+            }, function(err, member) {
               if (err) {
                 console.log(err);
                 return done({
-                  message: err
+                  message: err,
                 });
               }
 
@@ -281,7 +298,7 @@ module.exports = function(User) {
                 if (!member.facebookstatus) {
                   member.facebookstatus = true;
                   member.picture = res.picture;
-                  member.save(function (err) {
+                  member.save(function(err) {
                     if (err) {
                       return done(err);
                     }
@@ -292,9 +309,9 @@ module.exports = function(User) {
               } else {
                 User.findOne({
                   where: {
-                    email: email
-                  }
-                }, function (err, member2) {
+                    email: email,
+                  },
+                }, function(err, member2) {
                   if (err) {
                     console.log(err);
                   }
@@ -302,7 +319,7 @@ module.exports = function(User) {
                     member2.facebookId = facebookId;
                     member2.picture = res.picture;
                     member2.facebookstatus = true;
-                    member2.save(function (err) {
+                    member2.save(function(err) {
                       if (err) {
                         return done(err);
                       }
@@ -310,7 +327,6 @@ module.exports = function(User) {
                       return createMemberToken(member2, done);
                     });
                   } else {
-
                     var newMember = {};
                     newMember.facebookId = res.id;
                     newMember.displayName = res.name;
@@ -318,28 +334,28 @@ module.exports = function(User) {
                     newMember.picture = res.picture;
 
                     // Generate salt
-                    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+                    bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
                       if (err) {
                         callback(err);
                       }
 
                       // Generate password
                       var d = Date.now;
-                      bcrypt.hash(newMember.email + d.toString(), salt, function (err, hash) {
+                      bcrypt.hash(newMember.email + d.toString(), salt, function(err, hash) {
                         if (err) {
                           callback(err);
                         }
                         newMember.password = hash;
 
                         // Create a new member
-                        User.create(newMember, function (err, user) {
+                        User.create(newMember, function(err, user) {
                           if (err) {
                             callback(err);
                           }
 
                           var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
                           var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
-                          download(res.picture.data.url, imagePath, function () {
+                          download(res.picture.data.url, imagePath, function() {
                             console.log('done downloading');
                             // Image.create({
                             //     profileId: user.id,
@@ -349,8 +365,6 @@ module.exports = function(User) {
                               // create access token
                             return createMemberToken(user, done);
                           });
-
-
                         });
                       });
                     });
@@ -360,8 +374,7 @@ module.exports = function(User) {
             });
           } // else
         }); // FB.api('/me')
-      };
-
+    };
 
   User.setup = function() {
     User.remoteMethod(
@@ -371,22 +384,42 @@ module.exports = function(User) {
           arg: 'accessToken',
           type: 'string',
           required: true,
-          description: 'Facebook access token acquired by client.'
+          description: 'Facebook access token acquired by client.',
         },
         returns: {
-         arg: 'token', type: 'Object',
-         description: 'App access token.'
+          arg: 'token', type: 'Object',
+          description: 'App access token.',
         },
         returns: {
           type: 'object',
-          root: true
+          root: true,
         },
         http: {
-          verb: 'post'
-        }
+          verb: 'post',
+        },
       });
-  }
-
+    User.remoteMethod(
+        'createChef', {
+          description: 'Login a user with Facebook Access Token.',
+          accepts: {
+            arg: 'accessToken',
+            type: 'string',
+            required: true,
+            description: 'Facebook access token acquired by client.',
+          },
+          returns: {
+            arg: 'token', type: 'Object',
+            description: 'App access token.',
+          },
+          returns: {
+            type: 'object',
+            root: true,
+          },
+          http: {
+            verb: 'post',
+          },
+        });
+  };
+ 
   User.setup();
-
 };
