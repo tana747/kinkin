@@ -1,0 +1,34 @@
+{
+  "name": "OTP",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "otp_code": {
+      "type": "number"
+    },
+    "mobile": {
+      "type": "string"
+    },
+    "create_at": {
+      "type": "date",
+      "default": "$now"
+    },
+    "status": {
+      "type": "string",
+      "default": "active"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "userId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
