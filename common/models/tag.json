@@ -20,7 +20,7 @@
       "type": "date",
       "default": "$now"
     },
-    "userId":{
+    "create_by":{
       "type": "string"
     }
   },
