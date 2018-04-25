@@ -7,7 +7,17 @@
   },
   "properties": {
     "mobile": {
+      "type": "string",
+      "required": true
+    },
+    "name": {
       "type": "string"
+    },
+    "nickName": {
+      "type": "string"
+    },
+    "birthDay": {
+      "type": "date"
     },
     "picture": {
       "type": "object"
@@ -45,11 +55,6 @@
       "type": "hasMany",
       "model": "ServiceAccessToken",
       "foreignKey": "userId"
-    },
-    "profile": {
-      "type": "belongsTo",
-      "model": "Profile",
-      "foreignKey": "profileId"
     },
     "shop": {
       "type": "belongsTo",

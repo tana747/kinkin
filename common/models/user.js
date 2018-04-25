@@ -7,15 +7,15 @@ var request = require('request');
 var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
-let app = require('../../server/server.js');
+
 // var transport = nodemailer.createTransport('smtps://monthira%40playwork.co.th:2482536sa@smtp.gmail.com');
 // create reusable transporter object using the default SMTP transport
 var transport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'vingmailer@playwork.co.th',
-    pass: 'Maewnam7476',
-  },
+    pass: 'Maewnam7476'
+  }
 });
 
 var loopback = require('loopback');
@@ -31,12 +31,16 @@ var BASE_URL = 'http://localhost:3000';
 // }
 
 
+
 /*!
  * Module Constants.
  */
 var APP_ACCESS_TOKEN_TTL = 1209600;
 
+
 module.exports = function(User) {
+
+
   /// Helper function to validate token
   function validateToken(req, data, callback) {
     var AccessToken = User.app.models.AccessToken;
@@ -50,8 +54,8 @@ module.exports = function(User) {
     }
     AccessToken.findOne({
       where: {
-        id: accessToken,
-      },
+        id: accessToken
+      }
     }, function(err, token) {
       if (err) {
         return callback(err);
@@ -92,7 +96,7 @@ module.exports = function(User) {
     }, function(err, token) {
       if (err) {
         return done({
-          message: err,
+          message: err
         });
       }
       User.findById(member.id, {
@@ -100,7 +104,7 @@ module.exports = function(User) {
           relation: 'profile',
           scope: {
             where: {
-              hidden: 0,
+              hidden: 0
             },
           }
         }]
@@ -112,7 +116,8 @@ module.exports = function(User) {
         console.log(memberWithImage);
         var returnObj = createReturnObj(memberWithImage, token);
         return done(err, returnObj);
-      });
+      })
+
     });
   };
 
@@ -137,10 +142,12 @@ module.exports = function(User) {
     }
   });
 
+
   /**
    *  Reset password handle
    */
   User.on('resetPasswordRequest', function(info) {
+
     var mailOptions = {
       from: '"kinkin" <info@playwork.co.th>', // sender address
       to: info.email, // list of receivers
@@ -161,7 +168,7 @@ module.exports = function(User) {
       transport.sendMail(mailOptions, function(error, info) {
         if (error) {
           console.log('reject here');
-          console.log('err======>', error);
+          console.log("err======>", error);
           return console.log(error);
         }
         console.log(info);
@@ -430,7 +437,7 @@ module.exports = function(User) {
           arg: 'accessToken',
           type: 'string',
           required: true,
-          description: 'Facebook access token acquired by client.',
+          description: 'Facebook access token acquired by client.'
         },
         returns: {
           arg: 'token',
@@ -439,15 +446,12 @@ module.exports = function(User) {
         },
         returns: {
           type: 'object',
-          root: true,
+          root: true
         },
         http: {
-          verb: 'post',
-        },
+          verb: 'post'
+        }
       });
-  };
- 
-  User.setup();
   }
 
   User.changePassword = function(data, req, cb) {
@@ -529,28 +533,4 @@ module.exports = function(User) {
       verb: 'post'
     }
   });
-
-  User.remoteMethod(
-    'createChef', {
-      description: 'Login a user with Facebook Access Token.',
-      accepts: {
-        arg: 'accessToken',
-        type: 'string',
-        required: true,
-
-      },
-      returns: {
-        arg: 'token', type: 'Object',
-        description: 'App access token.',
-      },
-      returns: {
-        type: 'object',
-        root: true,
-      },
-      http: {
-        verb: 'post',
-      },
-    });
-
-
 };
