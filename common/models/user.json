@@ -7,8 +7,7 @@
   },
   "properties": {
     "mobile": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "name": {
       "type": "string"
