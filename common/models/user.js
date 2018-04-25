@@ -14,8 +14,8 @@ var transport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'vingmailer@playwork.co.th',
-    pass: 'Maewnam7476'
-  }
+    pass: 'Maewnam7476',
+  },
 });
 
 var loopback = require('loopback');
@@ -679,4 +679,3 @@ module.exports = function(User) {
   });
   User.setup();
 };
-//

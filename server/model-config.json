@@ -39,9 +39,6 @@
   "Message": {
     "dataSource": "mongoDb"
   },
-  "Profile": {
-    "dataSource": "mongoDb"
-  },
   "Shop": {
     "dataSource": "mongoDb"
   },
