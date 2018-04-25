@@ -63,6 +63,12 @@
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "*"
+    },{
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "superadmin",
+        "permission": "ALLOW",
+        "property": "*"
     },
     {
       "accessType": "EXECUTE",
