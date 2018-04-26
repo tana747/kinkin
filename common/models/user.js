@@ -582,28 +582,37 @@ module.exports = function(User) {
           language === undefined ||
           language === null ? `รหัส OTP สำหรับแอพสราญรส ของท่านคือ ${otpCode}` : `Your Saranros OTP is ${otpCode}`;
 
-        Axios.post('https://push.teqsms.com/api/send/sms.json', {
-            api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
-            api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
-            to: '66' + mobile.substring(1, 10),
-            sender_name: 'saranros',
-            text: text
-          }, {
-            headers: {
-              'content-type': 'application/json'
-            }
-          })
-          .then(function(response) {
-            if (response.data.statuses[0].code === '000') {
+        var dataString = {
+          api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
+          api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
+          to: '66' + mobile.substring(1, 10),
+          sender_name: 'saranros',
+          text: text
+        };
+        
+        request({
+          url: 'https://push.teqsms.com/api/send/sms.json',
+          method: 'POST',
+          json: dataString,
+          responseType: 'String',
+          headers: {
+            'content-type': 'application/json '
+          }
+        }, callback);
+
+        function callback(err, response, body) {
+          if (!err && response.statusCode == 200) {
+            console.log(body.statuses[0].code);
+            if (body.statuses[0].code === '000') {
               OTP.create({
                 otp_code: otpCode,
                 mobile: mobile,
                 status: "send",
                 userId: member.id,
                 text: text,
-                message_id: response.data.statuses[0].extra_data.message_id,
-                message_parts: response.data.statuses[0].extra_data.message_parts,
-                create_at: moment(response.data.statuses[0].extra_data.timestamp)
+                message_id: body.statuses[0].extra_data.message_id,
+                message_parts: body.statuses[0].extra_data.message_parts,
+                create_at: moment(body.statuses[0].extra_data.timestamp)
               }, function(err, otp) {
                 if (err) {
                   console.log(err);
@@ -615,7 +624,7 @@ module.exports = function(User) {
                 // return cb(null, {
                 //   send: 'success'
                 // });
-              })
+              });
             } else {
               console.log(err);
               var errMsg = new Error(err);
@@ -623,10 +632,8 @@ module.exports = function(User) {
               errMsg.message = "Fail cannot send otp";
               return cb(errMsg);
             }
-          })
-          .catch(function(error) {
-            console.log('error', error);
-          });
+          }
+        }
       }
     })
   };
@@ -715,7 +722,7 @@ module.exports = function(User) {
     var Shop = User.app.models.Shop;
     User.updateAll({
       id: id
-    },{
+    }, {
       status: false
     }, function(err, user) {
       if (err) {
