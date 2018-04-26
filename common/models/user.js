@@ -7,7 +7,8 @@ var request = require('request');
 var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
-
+var Axios = require('axios');
+// var FromData = require('from-data');
 // var transport = nodemailer.createTransport('smtps://monthira%40playwork.co.th:2482536sa@smtp.gmail.com');
 // create reusable transporter object using the default SMTP transport
 var transport = nodemailer.createTransport({
@@ -280,8 +281,6 @@ module.exports = function(User) {
         err.status = 422; // HTTP status code
         done(err);
       } else {
-        console.log(res);
-
         // res.id is facebookId in our member
         var facebookId = res.id;
         var email = res.email;
@@ -335,53 +334,53 @@ module.exports = function(User) {
 
                 var newMember = {};
                 newMember.facebookId = res.id;
-                // newMember.displayName = res.name;
+                newMember.nickName = res.name;
+                newMember.name = res.name;
                 newMember.email = res.email ? res.email : res.id + 'saranros@facebook.com';
                 newMember.picture = res.picture;
                 newMember.userType = 'user';
-                // var newProfile = {};
-                // newProfile.nickName = res.name;
-                // newProfile.name = res.name;
+
                 // Generate salt
                 bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
                   if (err) {
-                    callback(err);
+                    console.log(err);
+                    return done({
+                      message: err
+                    });
                   }
 
                   // Generate password
                   var d = Date.now;
                   bcrypt.hash(newMember.email + d.toString(), salt, function(err, hash) {
                     if (err) {
-                      callback(err);
+                      console.log(err);
+                      return done({
+                        message: err
+                      });
                     }
                     newMember.password = hash;
 
                     // Create a new member
                     User.create(newMember, function(err, user) {
                       if (err) {
-                        callback(err);
-                      }
-                      // newProfile.create_by = user.id
-                      Profile.create(newProfile, function(err, profile) {
-                        if (err) {
-                          callback(err);
-                        }
-                        user.profileId = profile.id;
-                        user.save();
-
-                        console.log("New user with facebook", user);
-                        var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
-                        var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
-                        download(res.picture.data.url, imagePath, function() {
-                          console.log('done downloading');
-                          // Image.create({
-                          //     profileId: user.id,
-                          //     url: '/assets/profile/' + imageFilename,
-                          //     hidden: 0
-                          //   })
-                          // create access token
-                          return createMemberToken(user, done);
+                        console.log(err);
+                        return done({
+                          message: err
                         });
+                      }
+                      console.log("New user with facebook", user);
+                      var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
+                      var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
+                      download(res.picture.data.url, imagePath, function() {
+                        console.log('done downloading');
+                        // Image.create({
+                        //     profileId: user.id,
+                        //     url: '/assets/profile/' + imageFilename,
+                        //     hidden: 0
+                        //   })
+                        // create access token
+                        return createMemberToken(user, done);
+
                       })
                     });
                   });
@@ -558,7 +557,7 @@ module.exports = function(User) {
     }
   });
 
-  User.requestOTP = function(mobile, cb) {
+  User.requestOTP = function(mobile, language, cb) {
     var OTP = User.app.models.OTP;
     OTP.updateAll({
       mobile: mobile
@@ -577,25 +576,56 @@ module.exports = function(User) {
         return cb(errMsg);
       }
       if (member) {
-        OTP.create({
-          otp_code: Math.floor(Math.random() * 10001),
-          mobile: mobile,
-          status: "active",
-          userId: member.id
-        }, function(err, otp) {
-          if (err) {
-            console.log(err);
-            var errMsg = new Error(err);
-            errMsg.status = 422; // HTTP status code
-            return cb(errMsg);
-          }
-          //send otp
-          // otpObj = {
-          //   otp_code: otp.otp_code,
-          //   mobile: otp.mobile,
-          // }
-          return cb(null, otp);
-        })
+        var otpCode = Math.floor(Math.random() * 9000) + 1000;
+        var text = language === 'th' ||
+          language === undefined ||
+          language === null ? `รหัส OTP สำหรับแอพสราญรส ของท่านคือ ${otpCode}` : `Your Saranros OTP is ${otpCode}`;
+
+        Axios.post('https://push.teqsms.com/api/send/sms.json', {
+            api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
+            api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
+            to: '66' + mobile.substring(1, 10),
+            sender_name: 'saranros',
+            text: text
+          }, {
+            headers: {
+              'content-type': 'application/json'
+            }
+          })
+          .then(function(response) {
+            if (response.data.statuses[0].code === '000') {
+              OTP.create({
+                otp_code: otpCode,
+                mobile: mobile,
+                status: "send",
+                userId: member.id,
+                text: text,
+                message_id: response.data.statuses[0].extra_data.message_id,
+                message_parts: response.data.statuses[0].extra_data.message_parts,
+                create_at: moment(response.data.statuses[0].extra_data.timestamp)
+              }, function(err, otp) {
+                if (err) {
+                  console.log(err);
+                  var errMsg = new Error(err);
+                  errMsg.status = 422; // HTTP status code
+                  return cb(errMsg);
+                }
+                return cb(null, otp);
+                // return cb(null, {
+                //   send: 'success'
+                // });
+              })
+            } else {
+              console.log(err);
+              var errMsg = new Error(err);
+              errMsg.status = 422; // HTTP status code
+              errMsg.message = "Fail cannot send otp";
+              return cb(errMsg);
+            }
+          })
+          .catch(function(error) {
+            console.log('error', error);
+          });
       }
     })
   };
@@ -606,6 +636,9 @@ module.exports = function(User) {
       arg: 'mobile',
       type: 'string',
       required: true,
+    }, {
+      arg: 'language',
+      type: 'string'
     }],
     returns: {
       type: 'object',
@@ -632,11 +665,10 @@ module.exports = function(User) {
       }
       if (historyOTP) {
         var expireTime = moment(historyOTP.create_at).add(5, 'minutes');
+
         // check otp expire
-        if (historyOTP.status === "active" && moment() <= expireTime) {
-          User.findById(historyOTP.userId, {
-            include: 'profile'
-          }, function(err, user) {
+        if (historyOTP.status === "send" && moment() <= expireTime) {
+          User.findById(historyOTP.userId, function(err, user) {
             if (err) {
               console.log(err);
               var errMsg = new Error(err);

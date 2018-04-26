@@ -13,12 +13,19 @@
       "type": "string"
     },
     "create_at": {
-      "type": "date",
-      "default": "$now"
+      "type": "date"
     },
     "status": {
-      "type": "string",
-      "default": "active"
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "message_id": {
+      "type": "string"
+    },
+    "message_parst": {
+      "type": "number"
     }
   },
   "validations": [],
