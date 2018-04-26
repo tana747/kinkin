@@ -40,7 +40,7 @@
     "userType": {
       "type": "string"
     },
-    "active": {
+    "status": {
       "type": "boolean",
       "default": true
     }
