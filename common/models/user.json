@@ -7,8 +7,7 @@
   },
   "properties": {
     "mobile": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "name": {
       "type": "string"
@@ -31,9 +30,6 @@
     "device_token": {
       "type": "string"
     },
-    "otp_code": {
-      "type": "string"
-    },
     "create_at": {
       "type": "date",
       "default": "$now"
@@ -45,8 +41,8 @@
       "type": "string"
     },
     "status": {
-      "type": "string",
-      "default": "active"
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],
@@ -62,18 +58,13 @@
       "foreignKey": "shopId"
     }
   },
-  "acls": [{
+  "acls": [
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "*"
-    },{
-        "accessType": "*",
-        "principalType": "ROLE",
-        "principalId": "superadmin",
-        "permission": "ALLOW",
-        "property": "*"
     },
     {
       "accessType": "EXECUTE",
@@ -120,7 +111,26 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "requestOTP"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "verifyOTP"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "deleteUserId"
     }
   ],
   "methods": {}

@@ -109,5 +109,9 @@
   "Address": {
     "dataSource": "mongoDb",
     "public": true
+  },
+  "OTP": {
+    "dataSource": "mongoDb",
+    "public": true
   }
 }

@@ -7,7 +7,7 @@ var request = require('request');
 var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
-
+// var FromData = require('from-data');
 // var transport = nodemailer.createTransport('smtps://monthira%40playwork.co.th:2482536sa@smtp.gmail.com');
 // create reusable transporter object using the default SMTP transport
 var transport = nodemailer.createTransport({
@@ -74,9 +74,14 @@ module.exports = function(User) {
 
   // inline helper function
   var createReturnObj = function(member, token) {
+    // console.log('member========++>',member);
+    // delete member.password;
+    // console.log('================================');
+    // console.log('member', member.member);
+    // return member;
     return {
       id: member.id,
-      userId: member.id,
+      // userId: member.id,
       name: member.name,
       email: member.email,
       displayName: member.displayName,
@@ -99,21 +104,13 @@ module.exports = function(User) {
           message: err
         });
       }
-      User.findById(member.id, {
-        include: [{
-          relation: 'profile',
-          scope: {
-            where: {
-              hidden: 0
-            },
-          }
-        }]
-      }, function(err, memberWithImage) {
+      // console.log('member===>', member);
+      User.findById(member.id, function(err, memberWithImage) {
         if (err) {
           console.log(err);
           return done(err);
         }
-        console.log(memberWithImage);
+        // console.log('memberWithImage', memberWithImage);
         var returnObj = createReturnObj(memberWithImage, token);
         return done(err, returnObj);
       })
@@ -123,8 +120,8 @@ module.exports = function(User) {
 
   var download = function(uri, filename, callback) {
     request.head(uri, function(err, res, body) {
-      console.log('content-type:', res.headers['content-type']);
-      console.log('content-length:', res.headers['content-length']);
+      // console.log('content-type:', res.headers['content-type']);
+      // console.log('content-length:', res.headers['content-length']);
 
       request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
@@ -149,9 +146,9 @@ module.exports = function(User) {
   User.on('resetPasswordRequest', function(info) {
 
     var mailOptions = {
-      from: '"kinkin" <info@playwork.co.th>', // sender address
+      from: '"saranros" <info@playwork.co.th>', // sender address
       to: info.email, // list of receivers
-      subject: 'Reset Password kinkin App', // Subject line
+      subject: 'Reset Password saranros App', // Subject line
       text: 'Please reset password at: ' + resetUrl + '?user=' + info.user.id + '&access_token=' + info.accessToken.id, // plaintext body
       html: 'Please reset password at:<br> <a href="' + resetUrl + '?user=' + info.user.id + '&access_token=' + info.accessToken.id + '">Reset Password</a>',
     };
@@ -163,7 +160,7 @@ module.exports = function(User) {
         console.log(err);
         return;
       }
-      console.log(mailOptions);
+      // console.log(mailOptions);
       // send mail with defined transport object
       transport.sendMail(mailOptions, function(error, info) {
         if (error) {
@@ -173,10 +170,11 @@ module.exports = function(User) {
         }
         console.log(info);
         console.log('Message sent: ' + info);
+        // return cb(null, info);
       });
+
     });
   });
-
 
 
   /**
@@ -202,12 +200,32 @@ module.exports = function(User) {
       //     ctx.where);
       next();
     }
-
   });
 
   /**
    *  Change how login return token
    */
+  User.beforeRemote('create', function(ctx, model, next) {
+    // console.log('beforeRemote', ctx.req.body);
+    User.findOne({
+      where: {
+        mobile: ctx.req.body
+      }
+    }, function(err, user) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        next(errMsg);
+      }
+      if (user) {
+        var errMsg = new Error(err);
+        errMsg.status = 422
+        next(errMsg);
+      }
+      next();
+    })
+  })
   User.afterRemote('login', function(ctx, model, next) {
 
     User.findById(model.userId, function(err, member) {
@@ -246,7 +264,7 @@ module.exports = function(User) {
 
 
   User.loginWithFacebookAccessToken = function(accessToken, done) {
-
+    // var Profile = User.app.models.Profile;
     // Set FB access token to FB connector
     FB.setAccessToken(accessToken);
     FB.extend({
@@ -256,14 +274,13 @@ module.exports = function(User) {
 
     // Check if FB is valid
     FB.api('me?fields=id,name,email,picture', function(res) {
+      console.log('res', res);
       if (res.error) {
         console.log(res)
         var err = new Error('Invalid FacebookAccessToken.');
         err.status = 422; // HTTP status code
         done(err);
       } else {
-        console.log(res);
-
         // res.id is facebookId in our member
         var facebookId = res.id;
         var email = res.email;
@@ -317,30 +334,41 @@ module.exports = function(User) {
 
                 var newMember = {};
                 newMember.facebookId = res.id;
-                newMember.displayName = res.name;
-                newMember.email = res.email ? res.email : res.id + 'ving@facebook.com';
+                newMember.nickName = res.name;
+                newMember.name = res.name;
+                newMember.email = res.email ? res.email : res.id + 'saranros@facebook.com';
                 newMember.picture = res.picture;
+                newMember.userType = 'user';
 
                 // Generate salt
                 bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
                   if (err) {
-                    callback(err);
+                    console.log(err);
+                    return done({
+                      message: err
+                    });
                   }
 
                   // Generate password
                   var d = Date.now;
                   bcrypt.hash(newMember.email + d.toString(), salt, function(err, hash) {
                     if (err) {
-                      callback(err);
+                      console.log(err);
+                      return done({
+                        message: err
+                      });
                     }
                     newMember.password = hash;
 
                     // Create a new member
                     User.create(newMember, function(err, user) {
                       if (err) {
-                        callback(err);
+                        console.log(err);
+                        return done({
+                          message: err
+                        });
                       }
-
+                      console.log("New user with facebook", user);
                       var imageFilename = Math.floor(Math.random() * 1000) + '-' + Date.now() + '.jpg';
                       var imagePath = path.join(__dirname, '../../client/dist/assets/profile/' + imageFilename);
                       download(res.picture.data.url, imagePath, function() {
@@ -352,9 +380,8 @@ module.exports = function(User) {
                         //   })
                         // create access token
                         return createMemberToken(user, done);
-                      });
 
-
+                      })
                     });
                   });
                 });
@@ -384,7 +411,7 @@ module.exports = function(User) {
       if (err) {
         console.log(err);
         var errMsg = new Error(err);
-        errMsg.status = 500; // HTTP status code
+        errMsg.status = 422; // HTTP status code
         return callback(errMsg);
       }
       if (member) {
@@ -392,7 +419,7 @@ module.exports = function(User) {
           if (err) {
             console.log(err);
             var errMsg = new Error(err);
-            errMsg.status = 500; // HTTP status code
+            errMsg.status = 422; // HTTP status code
             return callback(errMsg);
           }
 
@@ -400,11 +427,9 @@ module.exports = function(User) {
             if (err) {
               console.log(err);
               var errMsg = new Error(err);
-              errMsg.status = 500; // HTTP status code
+              errMsg.status = 422; // HTTP status code
               return callback(errMsg);
             }
-
-
             User.updateAll({
               id: member.id
             }, {
@@ -413,7 +438,7 @@ module.exports = function(User) {
               if (err) {
                 console.log(err);
                 var errMsg = new Error(err);
-                errMsg.status = 500; // HTTP status code
+                errMsg.status = 422; // HTTP status code
                 return callback(errMsg);
               }
               return callback(null, member);
@@ -423,11 +448,28 @@ module.exports = function(User) {
       } else {
         // console.log('Cannot find Member');
         var errMsg = new Error('Cannot find Member');
-        errMsg.status = 500; // HTTP status code
+        errMsg.status = 422; // HTTP status code
         return callback(errMsg);
       }
     });
   };
+  User.remoteMethod('newPassword', {
+    http: {
+      path: '/resetPassword',
+      verb: 'post'
+    },
+    accepts: [{
+      arg: 'data',
+      type: 'object',
+      http: {
+        source: 'body'
+      }
+    }],
+    returns: {
+      type: 'object',
+      root: true
+    }
+  });
 
   User.setup = function() {
     User.remoteMethod(
@@ -491,25 +533,6 @@ module.exports = function(User) {
     });
   };
 
-  User.setup();
-
-  User.remoteMethod('newPassword', {
-    http: {
-      path: '/resetPassword',
-      verb: 'post'
-    },
-    accepts: [{
-      arg: 'data',
-      type: 'object',
-      http: {
-        source: 'body'
-      }
-    }],
-    returns: {
-      type: 'object',
-      root: true
-    }
-  });
   User.remoteMethod('changePassword', {
     description: 'Change password',
     accepts: [{
@@ -533,4 +556,219 @@ module.exports = function(User) {
       verb: 'post'
     }
   });
+
+  User.requestOTP = function(mobile, language, cb) {
+    var OTP = User.app.models.OTP;
+    OTP.updateAll({
+      mobile: mobile
+    }, {
+      status: 'expire'
+    })
+    User.findOne({
+      where: {
+        mobile: mobile
+      }
+    }, function(err, member) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
+      }
+      if (member) {
+        var otpCode = Math.floor(Math.random() * 9000) + 1000;
+        var text = language === 'th' ||
+          language === undefined ||
+          language === null ? `รหัส OTP สำหรับแอพสราญรส ของท่านคือ ${otpCode}` : `Your Saranros OTP is ${otpCode}`;
+
+        var dataString = {
+          api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
+          api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
+          to: '66' + mobile.substring(1, 10),
+          sender_name: 'saranros',
+          text: text
+        };
+
+        request({
+          url: 'https://push.teqsms.com/api/send/sms.json',
+          method: 'POST',
+          json: dataString,
+          responseType: 'String',
+          headers: {
+            'content-type': 'application/json '
+          }
+        }, callback);
+
+        function callback(err, response, body) {
+          if (!err && response.statusCode == 200) {
+            console.log(body.statuses[0].code);
+            if (body.statuses[0].code === '000') {
+              OTP.create({
+                otp_code: otpCode,
+                mobile: mobile,
+                status: "send",
+                userId: member.id,
+                text: text,
+                message_id: body.statuses[0].extra_data.message_id,
+                message_parts: body.statuses[0].extra_data.message_parts,
+                create_at: moment(body.statuses[0].extra_data.timestamp)
+              }, function(err, otp) {
+                if (err) {
+                  console.log(err);
+                  var errMsg = new Error(err);
+                  errMsg.status = 422; // HTTP status code
+                  return cb(errMsg);
+                }
+                return cb(null, otp);
+                // return cb(null, {
+                //   send: 'success'
+                // });
+              });
+            } else {
+              console.log(err);
+              var errMsg = new Error(err);
+              errMsg.status = 422; // HTTP status code
+              errMsg.message = "Fail cannot send otp";
+              return cb(errMsg);
+            }
+          }
+        }
+      }
+    })
+  };
+
+  User.remoteMethod('requestOTP', {
+    description: 'Request send otp',
+    accepts: [{
+      arg: 'mobile',
+      type: 'string',
+      required: true,
+    }, {
+      arg: 'language',
+      type: 'string'
+    }],
+    returns: {
+      type: 'object',
+      root: true
+    },
+    http: {
+      verb: 'post'
+    }
+  });
+
+  User.verifyOTP = function(otp, mobile, cb) {
+    var OTP = User.app.models.OTP;
+    OTP.findOne({
+      where: {
+        mobile: mobile,
+        otp_code: otp
+      }
+    }, function(err, historyOTP) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
+      }
+      if (historyOTP) {
+        var expireTime = moment(historyOTP.create_at).add(5, 'minutes');
+
+        // check otp expire
+        if (historyOTP.status === "send" && moment() <= expireTime) {
+          User.findById(historyOTP.userId, function(err, user) {
+            if (err) {
+              console.log(err);
+              var errMsg = new Error(err);
+              errMsg.status = 422; // HTTP status code
+              return cb(err);
+            }
+            return cb(null, user)
+          })
+        } else {
+          historyOTP.status = "expire";
+          historyOTP.save();
+          return cb(null, "expire");
+        }
+      } else {
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        return cb(err);
+      }
+    })
+  };
+
+  User.remoteMethod('verifyOTP', {
+    description: 'Request send otp',
+    accepts: [{
+      arg: 'otp',
+      type: 'number',
+      required: true,
+    }, {
+      arg: 'mobile',
+      type: 'string',
+      required: true,
+    }],
+    returns: {
+      type: 'object',
+      root: true
+    },
+    http: {
+      verb: 'post'
+    }
+  });
+  User.disableRemoteMethod('deleteById', true);
+  User.deleteUserId = function(id, cb) {
+    var Shop = User.app.models.Shop;
+    User.updateAll({
+      id: id
+    }, {
+      status: false
+    }, function(err, user) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
+      }
+      if (user.shopId !== null || user.shopId !== undefined) {
+        Shop.updateAll({
+          id: user.shopId
+        }, {
+          status: false
+        }, function(err, shop) {
+          if (err) {
+            console.log(err);
+            var errMsg = new Error(err);
+            errMsg.status = 422; // HTTP status code
+            return cb(errMsg);
+          }
+          return cb(null, {
+            status: 'success'
+          });
+        })
+      } else {
+        return cb(null, {
+          status: 'success'
+        });
+      }
+    })
+  };
+  User.remoteMethod('deleteUserId', {
+    description: 'test delete',
+    accepts: [{
+      arg: 'id',
+      type: 'String',
+      required: true
+    }],
+    http: {
+      path: '/:id',
+      verb: 'delete'
+    },
+    returns: {
+      type: 'object',
+      root: true
+    },
+  });
+
+  User.setup();
 };
