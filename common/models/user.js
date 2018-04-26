@@ -105,7 +105,7 @@ module.exports = function(User) {
           message: err
         });
       }
-      console.log('member===>', member);
+      // console.log('member===>', member);
       User.findById(member.id, function(err, memberWithImage) {
         if (err) {
           console.log(err);
