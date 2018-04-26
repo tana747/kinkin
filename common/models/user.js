@@ -7,7 +7,6 @@ var request = require('request');
 var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
-var Axios = require('axios');
 // var FromData = require('from-data');
 // var transport = nodemailer.createTransport('smtps://monthira%40playwork.co.th:2482536sa@smtp.gmail.com');
 // create reusable transporter object using the default SMTP transport
@@ -589,7 +588,7 @@ module.exports = function(User) {
           sender_name: 'saranros',
           text: text
         };
-        
+
         request({
           url: 'https://push.teqsms.com/api/send/sms.json',
           method: 'POST',
