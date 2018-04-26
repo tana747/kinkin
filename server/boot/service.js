@@ -63,63 +63,63 @@ module.exports = function(app) {
     }
   });
 
-  User.findOne({
-    where: {
-      username: 'superadmin'
-    }
-  }, function(err, user) {
-
-    if (!user) {
-      User.create({
-        username: 'superadmin',
-        displayName: 'superadmin',
-        email: 'superadmin@saranros.kin',
-        password: 'saranrospassword',
-        type: 'superadmin'
-      }, function(err, user) {
-        if (err) throw err;
-        console.log('Created users:', user);
-
-        //create the admin role
-        Role.findOne({
-          where: {
-            name: 'superadmin'
-          }
-        }, function(err, role) {
-          if (err) throw err;
-
-          if (!role) {
-            //create the admin role
-            Role.create({
-              name: 'superadmin'
-            }, function(err, role) {
-              if (err) throw err;
-
-              console.log('Created role:', role);
-
-              role.principals.create({
-                principalType: RoleMapping.USER,
-                principalId: user.id
-              }, function(err, principal) {
-                if (err) throw err;
-                console.log('Created principal:', principal);
-              });
-            });
-          } else {
-            role.principals.create({
-              principalType: RoleMapping.USER,
-              principalId: user.id
-            }, function(err, principal) {
-              if (err) throw err;
-              console.log('Created principal:', principal);
-            });
-          }
-        });
-      });
-    } else {
-      console.log('SuperAdmin already exist');
-    }
-  });
+  // User.findOne({
+  //   where: {
+  //     username: 'superadmin'
+  //   }
+  // }, function(err, user) {
+  //
+  //   if (!user) {
+  //     User.create({
+  //       username: 'superadmin',
+  //       displayName: 'superadmin',
+  //       email: 'superadmin@saranros.kin',
+  //       password: 'saranrospassword',
+  //       type: 'superadmin'
+  //     }, function(err, user) {
+  //       if (err) throw err;
+  //       console.log('Created users:', user);
+  //
+  //       //create the admin role
+  //       Role.findOne({
+  //         where: {
+  //           name: 'superadmin'
+  //         }
+  //       }, function(err, role) {
+  //         if (err) throw err;
+  //
+  //         if (!role) {
+  //           //create the admin role
+  //           Role.create({
+  //             name: 'superadmin'
+  //           }, function(err, role) {
+  //             if (err) throw err;
+  //
+  //             console.log('Created role:', role);
+  //
+  //             role.principals.create({
+  //               principalType: RoleMapping.USER,
+  //               principalId: user.id
+  //             }, function(err, principal) {
+  //               if (err) throw err;
+  //               console.log('Created principal:', principal);
+  //             });
+  //           });
+  //         } else {
+  //           role.principals.create({
+  //             principalType: RoleMapping.USER,
+  //             principalId: user.id
+  //           }, function(err, principal) {
+  //             if (err) throw err;
+  //             console.log('Created principal:', principal);
+  //           });
+  //         }
+  //       });
+  //     });
+  //   } else {
+  //     console.log('SuperAdmin already exist');
+  //   }
+  // });
 
   Province.find({}, function(err, province) {
     var obj;

@@ -67,13 +67,6 @@
       "property": "*"
     },
     {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "superadmin",
-      "permission": "ALLOW",
-      "property": "*"
-    },
-    {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
