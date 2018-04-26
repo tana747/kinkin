@@ -79,7 +79,7 @@ module.exports = function(User) {
     // delete member.password;
     // console.log('================================');
     // console.log('member', member.member);
-    return member;
+    // return member;
     return {
       id: member.id,
       // userId: member.id,
@@ -105,7 +105,7 @@ module.exports = function(User) {
           message: err
         });
       }
-      // console.log('member===>', member.id);
+      console.log('member===>', member);
       User.findById(member.id, function(err, memberWithImage) {
         if (err) {
           console.log(err);
@@ -275,6 +275,7 @@ module.exports = function(User) {
 
     // Check if FB is valid
     FB.api('me?fields=id,name,email,picture', function(res) {
+      console.log('res', res);
       if (res.error) {
         console.log(res)
         var err = new Error('Invalid FacebookAccessToken.');
@@ -709,5 +710,59 @@ module.exports = function(User) {
       verb: 'post'
     }
   });
+  User.disableRemoteMethod('deleteById', true);
+  User.deleteUserId = function(id, cb) {
+    var Shop = User.app.models.Shop;
+    User.updateAll({
+      id: id
+    },{
+      status: false
+    }, function(err, user) {
+      if (err) {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
+      }
+      if (user.shopId !== null || user.shopId !== undefined) {
+        Shop.updateAll({
+          id: user.shopId
+        }, {
+          status: false
+        }, function(err, shop) {
+          if (err) {
+            console.log(err);
+            var errMsg = new Error(err);
+            errMsg.status = 422; // HTTP status code
+            return cb(errMsg);
+          }
+          return cb(null, {
+            status: 'success'
+          });
+        })
+      } else {
+        return cb(null, {
+          status: 'success'
+        });
+      }
+    })
+  };
+  User.remoteMethod('deleteUserId', {
+    description: 'test delete',
+    accepts: [{
+      arg: 'id',
+      type: 'String',
+      required: true
+    }],
+    http: {
+      path: '/:id',
+      verb: 'delete'
+    },
+    returns: {
+      type: 'object',
+      root: true
+    },
+  });
+
   User.setup();
 };

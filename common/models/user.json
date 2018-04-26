@@ -118,7 +118,8 @@
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$owner",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": "*"
     },
     {
       "principalType": "ROLE",
@@ -131,6 +132,12 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "verifyOTP"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "deleteUserId"
     }
   ],
   "methods": {}

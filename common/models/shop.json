@@ -35,8 +35,8 @@
       "type": "string"
     },
     "status": {
-      "type": "string",
-      "default": "active"
+      "type": "boolean",
+      "default": true
     }
   },
   "validations": [],
@@ -69,7 +69,7 @@
      "accessType": "WRITE",
      "principalType": "ROLE",
      "principalId": "$everyone",
-     "permission": "DENY"
+     "permission": "ALLOW"
    },
    {
     "accessType": "READ",
