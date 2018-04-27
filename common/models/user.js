@@ -681,6 +681,8 @@ module.exports = function(User) {
               errMsg.status = 422; // HTTP status code
               return cb(err);
             }
+            historyOTP.status = "success";
+            historyOTP.save();
             return cb(null, user)
           })
         } else {
