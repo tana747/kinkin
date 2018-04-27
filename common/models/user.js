@@ -569,6 +569,7 @@ module.exports = function(User) {
         mobile: mobile
       }
     }, function(err, member) {
+      // console.log('member', member);
       if (err) {
         console.log(err);
         var errMsg = new Error(err);
@@ -633,6 +634,12 @@ module.exports = function(User) {
             }
           }
         }
+      } else {
+        console.log(err);
+        var errMsg = new Error(err);
+        errMsg.meaasge = "Mobile not found"
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
       }
     })
   };
