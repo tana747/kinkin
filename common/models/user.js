@@ -583,8 +583,8 @@ module.exports = function(User) {
           language === null ? `รหัส OTP สำหรับแอพสราญรส ของท่านคือ ${otpCode}` : `Your Saranros OTP is ${otpCode}`;
 
         var dataString = {
-          api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
-          api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
+          api_key: 'e062ea68f42a7d8a66ecb7813f053ff0556c965f',
+          api_secret: 'db9a7e06d-4e42db1494141046-b9920b467615f',
           to: '66' + mobile.substring(1, 10),
           sender_name: 'saranros',
           text: text
