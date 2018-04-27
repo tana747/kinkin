@@ -409,7 +409,6 @@ module.exports = function(User) {
       //   }
       // }, function(err, member) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return callback(errMsg);
@@ -425,7 +424,6 @@ module.exports = function(User) {
 
           bcrypt.hash(data.password, salt, function(err, hash) {
             if (err) {
-              console.log(err);
               var errMsg = new Error(err);
               errMsg.status = 422; // HTTP status code
               return callback(errMsg);
@@ -436,7 +434,6 @@ module.exports = function(User) {
               password: hash
             }, function(err, info) {
               if (err) {
-                console.log(err);
                 var errMsg = new Error(err);
                 errMsg.status = 422; // HTTP status code
                 return callback(errMsg);
@@ -569,8 +566,8 @@ module.exports = function(User) {
         mobile: mobile
       }
     }, function(err, member) {
+      // console.log('member', member);
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -582,8 +579,8 @@ module.exports = function(User) {
           language === null ? `รหัส OTP สำหรับแอพสราญรส ของท่านคือ ${otpCode}` : `Your Saranros OTP is ${otpCode}`;
 
         var dataString = {
-          api_key: '67c2015f9b17888d0d7957637b90c28b4dfb0a66',
-          api_secret: 'KUA1b307acba-4f54f55aafc-33bb06bbbf6ca-803e9a',
+          api_key: 'e062ea68f42a7d8a66ecb7813f053ff0556c965f',
+          api_secret: 'db9a7e06d-4e42db1494141046-b9920b467615f',
           to: '66' + mobile.substring(1, 10),
           sender_name: 'saranros',
           text: text
@@ -625,14 +622,18 @@ module.exports = function(User) {
                 // });
               });
             } else {
-              console.log(err);
-              var errMsg = new Error(err);
+              var errMsg = new Error();
               errMsg.status = 422; // HTTP status code
               errMsg.message = "Fail cannot send otp";
               return cb(errMsg);
             }
           }
         }
+      } else {
+        var errMsg = new Error();
+        errMsg.meaasge = "Mobile not found"
+        errMsg.status = 422; // HTTP status code
+        return cb(errMsg);
       }
     })
   };
@@ -665,7 +666,6 @@ module.exports = function(User) {
       }
     }, function(err, historyOTP) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -677,7 +677,6 @@ module.exports = function(User) {
         if (historyOTP.status === "send" && moment() <= expireTime) {
           User.findById(historyOTP.userId, function(err, user) {
             if (err) {
-              console.log(err);
               var errMsg = new Error(err);
               errMsg.status = 422; // HTTP status code
               return cb(err);
@@ -690,9 +689,9 @@ module.exports = function(User) {
           return cb(null, "expire");
         }
       } else {
-        var errMsg = new Error(err);
+        var errMsg = new Error();
         errMsg.status = 422; // HTTP status code
-        return cb(err);
+        return cb(errMsg);
       }
     })
   };
@@ -725,7 +724,6 @@ module.exports = function(User) {
       status: false
     }, function(err, user) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -737,7 +735,6 @@ module.exports = function(User) {
           status: false
         }, function(err, shop) {
           if (err) {
-            console.log(err);
             var errMsg = new Error(err);
             errMsg.status = 422; // HTTP status code
             return cb(errMsg);
