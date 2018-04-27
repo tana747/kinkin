@@ -409,7 +409,6 @@ module.exports = function(User) {
       //   }
       // }, function(err, member) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return callback(errMsg);
@@ -425,7 +424,6 @@ module.exports = function(User) {
 
           bcrypt.hash(data.password, salt, function(err, hash) {
             if (err) {
-              console.log(err);
               var errMsg = new Error(err);
               errMsg.status = 422; // HTTP status code
               return callback(errMsg);
@@ -436,7 +434,6 @@ module.exports = function(User) {
               password: hash
             }, function(err, info) {
               if (err) {
-                console.log(err);
                 var errMsg = new Error(err);
                 errMsg.status = 422; // HTTP status code
                 return callback(errMsg);
@@ -571,7 +568,6 @@ module.exports = function(User) {
     }, function(err, member) {
       // console.log('member', member);
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -626,8 +622,7 @@ module.exports = function(User) {
                 // });
               });
             } else {
-              console.log(err);
-              var errMsg = new Error(err);
+              var errMsg = new Error();
               errMsg.status = 422; // HTTP status code
               errMsg.message = "Fail cannot send otp";
               return cb(errMsg);
@@ -635,8 +630,7 @@ module.exports = function(User) {
           }
         }
       } else {
-        console.log(err);
-        var errMsg = new Error(err);
+        var errMsg = new Error();
         errMsg.meaasge = "Mobile not found"
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -672,7 +666,6 @@ module.exports = function(User) {
       }
     }, function(err, historyOTP) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -684,7 +677,6 @@ module.exports = function(User) {
         if (historyOTP.status === "send" && moment() <= expireTime) {
           User.findById(historyOTP.userId, function(err, user) {
             if (err) {
-              console.log(err);
               var errMsg = new Error(err);
               errMsg.status = 422; // HTTP status code
               return cb(err);
@@ -697,9 +689,9 @@ module.exports = function(User) {
           return cb(null, "expire");
         }
       } else {
-        var errMsg = new Error(err);
+        var errMsg = new Error();
         errMsg.status = 422; // HTTP status code
-        return cb(err);
+        return cb(errMsg);
       }
     })
   };
@@ -732,7 +724,6 @@ module.exports = function(User) {
       status: false
     }, function(err, user) {
       if (err) {
-        console.log(err);
         var errMsg = new Error(err);
         errMsg.status = 422; // HTTP status code
         return cb(errMsg);
@@ -744,7 +735,6 @@ module.exports = function(User) {
           status: false
         }, function(err, shop) {
           if (err) {
-            console.log(err);
             var errMsg = new Error(err);
             errMsg.status = 422; // HTTP status code
             return cb(errMsg);
